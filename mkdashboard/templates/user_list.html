@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title%}
+{% endblock %}
+{% block body %}
+
+{% if users|length > 0 %}
+<table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Email</th>
+      <th scope="col">Password</th>
+      <th scope="col">Admin</th>
+      <th scope="col">Reg.Date</th>
+      <th scope="col">hash</th>
+      <th scope="col">#</th>
+    </tr>
+  </thead>
+    {%for u in users%}
+    <tr>
+      <td>{{u.uid}}</td>
+      <th scope="row">{{u.email}}</th>
+      <td>{{u.pwd.split(':')[0]}}</td>
+      <td>{{u.admin}}</td>
+      <td>{{u.date.date()}}</td>
+      <td>{{u.hash[:16]}}</td>
+      <td><a href="/user/{{ u.hash }}/delete" class="btn btn-danger">Delete</a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+    <p>Empty list</p>
+{% endif %}
+{% endblock %}

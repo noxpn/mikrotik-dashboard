@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title%}
+{% endblock %}
+{% block body %}
+<div class="row justify-content-center mt-3 mb-2">
+    <h4>Add new RouterBoard</h4>
+</div>
+<div class="row justify-content-center">
+ <div class="col-3">
+  <form action="{{ url_for('rb_add') }}" method="post">
+    <div class="form-group">
+    <label for="h_name">Device Name</label>
+    <input type="text" name="h_name" id="h_name" placeholder="Device Name" class="form-control">
+    <small id="h-name" class="form-text text-muted">clear name</small>
+    </div>
+   <div class="form-group">
+    <label for="h_ip">Device IP Address</label>
+    <input type="text" name="h_ip" id="h_ip" placeholder="IP Address" class="form-control">
+    <small id="h-ip" class="form-text text-muted">no DNS name allowed</small>
+    </div>
+    <div class="form-group">
+    <label for="h_port">Device TCP Port</label>
+    <input type="text" name="h_port" id="h_port" value="8729" class="form-control">
+    </div>
+    <div class="form-group">
+    <label for="h_isp">Internet Service Provider</label>
+    <input type="text" name="h_isp" id="h_isp" placeholder="Internet Service Provider" class="form-control">
+    </div>
+    <div class="form-group">
+    <label for="h_loc">Location</label>
+    <input type="text" name="h_loc" id="h_loc" placeholder="Country/City" class="form-control">
+    </div>
+    <div class="form-group">
+    <label for="h_login">API login</label>
+    <input type="text" name="h_login" id="h_login" placeholder="login" class="form-control">
+    </div>
+ <div class="form-group">
+  <label for="h_pwd">Password</label>
+  <input type="password" name="h_pwd" id="h_pwd" placeholder="password" class="form-control">
+ </div>
+<div class="form-check">
+  <input type="checkbox" class="form-check-input" name="h_enabled" id="h_enabled" checked>
+  <label class="form-check-label" for="h_enabled">Enabled</label>
+</div>
+ <div class="row justify-content-center">
+  <div class="col-auto">
+   <input type="submit" class="btn btn-success" value="Add">
+  </div>
+ </div>
+</form>
+</div>
+</div>
+
+{% endblock %}

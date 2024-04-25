@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+
+{% block title%}
+MKT Dashboard
+{% endblock %}
+{% block body %}
+<div class="table-responsive">
+<table class="table">
+<thead class="thead-dark">
+  <tr>
+    <th>#</th>
+    <th>name</th>
+    <th>ip</th>
+    <th>loc</th>
+    <th>isp</th>
+    <th>board</th>
+    <th>f-ware</th>
+    <th>f-mem</th>
+    <th>f-hdd</th>
+    <th>uptime</th>
+
+  </tr>
+</thead>
+
+<tbody>
+{% if host_list|length > 0 %}
+    {% for host in host_list %}
+
+    <tr data-toggle="collapse" data-target="#a-{{host['id']}}" class="clickable border" id="{{host['id']}}">
+        <td>+</td>
+        <td>{{host['name'][:10]}}</td>
+        <td>{{host['ip']}}</td>
+        <td>{{host['loc'][:10]}}</td>
+        <td>{{host['isp'][:10]}}</td>
+        <td id="board-{{host['id']}}"></td>
+        <td id="fware-{{host['id']}}"></td>
+        <td id="mem-{{host['id']}}"></td>
+        <td id="fhdd-{{host['id']}}"></td>
+        <td id="uptime-{{host['id']}}"></td>
+        <script type="text/javascript">
+            makeBriefInfoRequest('{{a_url}}{{url_for('rb_exec_brinfo')}}', {'id':'{{host['id']}}'});
+        </script>
+    </tr>
+    <tr id="a-{{host['id']}}" class="collapse">
+        <td></td>
+      <td colspan="9" id="t-{{host['id']}}" class="bg-light">
+       <div class="container-fluid">
+          <div class="mb-3 row" id="buttons-{{host['id']}}">
+
+<div class="btn-group">
+  <button type="button" class="btn btn-outline-secondary dropdown-toggle btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    rb info
+  </button>
+  <div class="dropdown-menu">
+    <a class="dropdown-item" href="#" onClick="makeRequest('{{a_url}}{{ url_for('rb_exec')}}', {'id':'{{host['id']}}', 'cmd':'/system/routerboard'});">info</a>
+    <a class="dropdown-item" href="#" onClick="makeRequest('{{a_url}}{{ url_for('rb_exec')}}', {'id':'{{host['id']}}', 'cmd':'/system/health'});">health</a>
+    <a class="dropdown-item" href="#" onClick="makeRequest('{{a_url}}{{ url_for('rb_exec')}}', {'id':'{{host['id']}}', 'cmd':'/system/resource'});">resource</a>
+    <a class="dropdown-item" href="#" onClick="makeRequest('{{a_url}}{{ url_for('rb_exec')}}', {'id':'{{host['id']}}', 'cmd':'/system/clock'});">time</a>
+  </div>
+</div>
+<div class="btn-group">
+  <button type="button" class="btn btn-outline-warning dropdown-toggle btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    security
+  </button>
+  <div class="dropdown-menu">
+    <a class="dropdown-item" href="#" onClick="makeRequest('{{a_url}}{{ url_for('rb_exec')}}',{'id':'{{host['id']}}', 'cmd': '/ip/service'});">service</a>
+    <a class="dropdown-item" href="#" onClick="makeRequest('{{a_url}}{{ url_for('rb_exec')}}',{'id':'{{host['id']}}', 'cmd': '/user'});">users</a>
+    <a class="dropdown-item" href="#" onClick="makeRequest('{{a_url}}{{ url_for('rb_exec')}}',{'id':'{{host['id']}}', 'cmd': '/user/ssh-keys'});">ssh_key</a>
+    <a class="dropdown-item" href="#" onClick="makeRequest('{{a_url}}{{ url_for('rb_exec')}}',{'id':'{{host['id']}}', 'cmd': '/system/scheduler'});">scheduler</a>
+  </div>
+</div>
+<div class="col-4">
+              <div class="input-group input-group-sm">
+                  <input type="text" class="form-control" placeholder="ip" id="ip-{{host['id']}}">
+                  <div class="input-group-append">
+                    <button class="btn btn-outline-info" type="button"
+                    onClick="makeRequest('{{a_url}}{{ url_for('rb_exec_diag') }}', {
+                        'id':'{{host['id']}}',
+                        'cmd':'/ping',
+                        'target': getValueFromInput('ip-'+'{{host['id']}}'),
+                        'count': '5',
+                        'type':'icmp',
+                        });">
+                        ping</button>
+                    <button class="btn btn-outline-info" type="button"
+                    onClick="makeRequest('{{a_url}}{{ url_for('rb_exec_diag') }}', {
+                        'id':'{{host['id']}}',
+                        'cmd':'/tool/traceroute',
+                        'target': getValueFromInput('ip-'+'{{host['id']}}'),
+                        'count': '5',
+                        'type':'icmp',
+                        });">
+                        trace</button>
+{% if session['rw'] == 1 %}
+                    <button class="btn btn-outline-danger" type="button"
+                    onClick="makeDebugRequest('{{a_url}}{{ url_for('rb_exec_test') }}', {
+                        'id':'{{host['id']}}',
+                        'cmd': getValueFromInput('ip-'+'{{host['id']}}'),
+                        });">
+                        test</button>
+{% endif %}
+                  </div>
+            </div>
+</div>
+              <button class="btn btn-outline-success btn-sm" type="button"
+        onClick="makeRequest('{{a_url}}{{ url_for('rb_exec')}}',{'id':'{{host['id']}}', 'cmd': '/log'});">
+     log</button>
+<div class="btn-group">
+  <button type="button" class="btn btn-outline-info dropdown-toggle btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    ip
+  </button>
+  <div class="dropdown-menu">
+    <a class="dropdown-item" href="#" onClick="makeRequest('{{a_url}}{{ url_for('rb_exec')}}',{'id':'{{host['id']}}', 'cmd': '/ip/address'});">address</a>
+    <a class="dropdown-item" href="#" onClick="makeRequest('{{a_url}}{{ url_for('rb_exec')}}',{'id':'{{host['id']}}', 'cmd': '/interface'});">iface</a>
+    <a class="dropdown-item" href="#" onClick="makeRequest('{{a_url}}{{ url_for('rb_exec')}}',{'id':'{{host['id']}}', 'cmd': '/ip/route'});">route</a>
+  </div>
+</div>
+<div class="btn-group">
+  <button type="button" class="btn btn-outline-info dropdown-toggle btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    switch
+  </button>
+  <div class="dropdown-menu">
+    <a class="dropdown-item" href="#" onClick="makeRequest('{{a_url}}{{ url_for('rb_exec')}}',{'id':'{{host['id']}}', 'cmd': '/interface/ethernet/switch/port'});">Switch Port</a>
+    <a class="dropdown-item" href="#" onClick="makeRequest('{{a_url}}{{ url_for('rb_exec')}}',{'id':'{{host['id']}}', 'cmd': '/interface/ethernet/switch/vlan'});">Switch Vlans</a>
+  </div>
+</div>
+<div class="btn-group">
+  <button type="button" class="btn btn-outline-info dropdown-toggle btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    bridge
+  </button>
+  <div class="dropdown-menu">
+    <a class="dropdown-item" href="#" onClick="makeRequest('{{a_url}}{{ url_for('rb_exec')}}',{'id':'{{host['id']}}', 'cmd': '/interface/bridge'});">Bridge</a>
+    <a class="dropdown-item" href="#" onClick="makeRequest('{{a_url}}{{ url_for('rb_exec')}}',{'id':'{{host['id']}}', 'cmd': '/interface/bridge/port'});">Bridge Ports</a>
+    <a class="dropdown-item" href="#" onClick="makeRequest('{{a_url}}{{ url_for('rb_exec')}}',{'id':'{{host['id']}}', 'cmd': '/interface/bridge/vlan'});">Bridge Vlans</a>
+  </div>
+<!--dropdown menu end-->
+</div>
+          </div>
+          <div id="c-{{host['id']}}">
+          </div>
+      </td>
+    </tr>
+    {% endfor %}
+
+{% else %}
+<td colspan="10">Empty List</td>
+{% endif %}
+    </tbody>
+</table>
+</div>
+
+{% endblock %}

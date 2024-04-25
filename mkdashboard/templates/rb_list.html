@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title%}
+{% endblock %}
+{% block body %}
+
+{% if devices|length > 0 %}
+<table class="table table-bordered" cellspacing="0">
+  <thead class="thead-light">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">Ip</th>
+      <th scope="col">login</th>
+      <th scope="col">Isp</th>
+      <th scope="col">Loc</th>
+      <th scope="col">Reg.Date</th>
+      <th scope="col">#</th>
+      <th scope="col">#</th>
+    </tr>
+  </thead>
+    {%for d in devices%}
+    {% if d.enabled %}
+     <tr>
+    {% else %}
+<!--     <tr class="text-secondary">-->
+     <tr class="text-warning">
+    {% endif %}
+      <td>{{d.hash[:6] }}</td>
+      <th scope="row">{{d.name}}</th>
+      <td>{{d.ip}}</td>
+      <td>{{d.login}}</td>
+      <td>{{d['isp']}}</td>
+      <td>{{d['loc']}}</td>
+      <td>{{d.date.date()}}</td>
+      <td><a href="/rb/{{ d.hash }}/delete" class="btn btn-sm btn-outline-danger">Delete</a></td>
+      <td><a href="/rb/{{ d.hash }}/edit" class="btn btn-sm btn-outline-success">Edit</a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+    <p>Empty list</p>
+{% endif %}
+{% endblock %}
